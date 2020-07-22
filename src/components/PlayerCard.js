@@ -1,9 +1,15 @@
 import React from "react";
-import { randomCards } from "./common/cardDeck";
-// import { randomCards } from "./common/cardDeck";
+import { CardsContainer } from "./common/CardsContainer";
+import { CardWrapper } from "./common/CardsWrapper";
 
 const PlayerCard = ({ cards }) => {
-  return <div>Player - {cards}</div>;
+  return (
+    <CardsContainer>
+      {cards.map((card) => (
+        <CardWrapper className={card}></CardWrapper>
+      ))}
+    </CardsContainer>
+  );
 };
 
 export default PlayerCard;
