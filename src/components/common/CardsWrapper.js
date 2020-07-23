@@ -1,4 +1,3 @@
-import React from "react";
 import styled from "styled-components";
 
 export const CardWrapper = styled.div`
@@ -7,6 +6,6 @@ export const CardWrapper = styled.div`
   border-radius: 10px;
   border: 1px solid grey;
   &:not(:last-child) {
-    margin-right: 12px;
+    margin-right: -70px;
   }
 `;

@@ -5,6 +5,7 @@ import PlayerCard from "./PlayerCard";
 import { randomCards } from "./common/CardDeck";
 import table from "../assets/table.jpg";
 import "../scss/cards.scss";
+import { getScore } from "../utils/getScore";
 
 const botStartCards = randomCards.splice(-2, 1);
 const startCards = randomCards.splice(-2, 2);
@@ -15,19 +16,17 @@ const App = () => {
     const newCard = randomCards.pop();
     setCards([...cards, newCard]);
   };
+  const playerScore = getScore(cards);
   return (
     <Container>
       <GameContainer>
         <BotCard botStartCards={botStartCards} />
-        <PlayerCard cards={cards} />
+        <PlayerCard cards={cards} playerScore={playerScore} />
       </GameContainer>
       <ToolsContainer>
         <ToolsWrapper>
-          <ScoreContainer>
-            <ScoreWrapper>Bot - ?</ScoreWrapper>
-            <ScoreWrapper>Player - ?</ScoreWrapper>
-          </ScoreContainer>
-          <button disabled={cards.length >= 51} onClick={() => addCard()}>
+          <ScoreContainer>BankRoll</ScoreContainer>
+          <button disabled={playerScore >= 21} onClick={() => addCard()}>
             Add Card
           </button>
           <ChipsContainer>Chips</ChipsContainer>
@@ -73,6 +72,10 @@ const ToolsContainer = styled.div`
     outline: 0;
     cursor: pointer;
     text-transform: uppercase;
+    &:disabled {
+      background-color: darkkhaki;
+      cursor: not-allowed;
+    }
   }
 `;
 
@@ -84,9 +87,7 @@ const ToolsWrapper = styled.div`
   padding: 0 15px;
 `;
 
-const ScoreContainer = styled.div``;
-
-const ScoreWrapper = styled.div`
+const ScoreContainer = styled.div`
   color: lightseagreen;
 `;
 

@@ -1,12 +1,13 @@
 import React from "react";
-import { CardsContainer } from "./common/CardsContainer";
+import { CardsContainer, ScoreContainer } from "./common/CardsContainer";
 import { CardWrapper } from "./common/CardsWrapper";
 
-const PlayerCard = ({ cards }) => {
+const PlayerCard = ({ cards, playerScore }) => {
   return (
     <CardsContainer>
+      <ScoreContainer>{playerScore}</ScoreContainer>
       {cards.map((card) => (
-        <CardWrapper className={card}></CardWrapper>
+        <CardWrapper key={card} className={card}></CardWrapper>
       ))}
     </CardsContainer>
   );

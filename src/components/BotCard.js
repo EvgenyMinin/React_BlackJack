@@ -7,7 +7,7 @@ const BotCard = ({ botStartCards }) => {
   return (
     <CardsContainer>
       {botStartCards.map((card) => (
-        <CardWrapper className={card}></CardWrapper>
+        <CardWrapper key={card} className={card}></CardWrapper>
       ))}
       <BlankCard>
         <CardWrapper className="cardBack"></CardWrapper>
