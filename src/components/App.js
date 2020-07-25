@@ -3,33 +3,75 @@ import styled from "styled-components";
 import BotCard from "./BotCard";
 import PlayerCard from "./PlayerCard";
 import { randomCards } from "./common/CardDeck";
+import { Button } from "./common/Buttons";
 import table from "../assets/table.jpg";
-import "../scss/cards.scss";
 import { getScore } from "../utils/getScore";
+import "../scss/cards.scss";
 
 const botStartCards = randomCards.splice(-2, 1);
 const startCards = randomCards.splice(-2, 2);
 
 const App = () => {
+  const [isStarting, setIsStarting] = useState(false);
+  const [isPlayerStand, setIsPlayerStand] = useState(false);
+  const [botCards, setBotCards] = useState(botStartCards);
   const [cards, setCards] = useState(startCards);
+  const playerScore = getScore(cards);
+  const botScore = getScore(botCards);
+
   const addCard = () => {
     const newCard = randomCards.pop();
     setCards([...cards, newCard]);
   };
-  const playerScore = getScore(cards);
+
+  const stand = () => {
+    setIsPlayerStand(true);
+    const newCard = randomCards.pop();
+    setBotCards([...botCards, newCard]);
+  };
   return (
     <Container>
-      <GameContainer>
-        <BotCard botStartCards={botStartCards} />
-        <PlayerCard cards={cards} playerScore={playerScore} />
-      </GameContainer>
+      {isStarting ? (
+        <GameContainer>
+          <BotCard
+            botCards={botCards}
+            botScore={botScore}
+            isPlayerStand={isPlayerStand}
+          />
+          <PlayerCard cards={cards} playerScore={playerScore} />
+        </GameContainer>
+      ) : (
+        <StartGameButtonContainer>
+          <Button modifiers={["start"]} onClick={() => setIsStarting(true)}>
+            Start Game
+          </Button>
+        </StartGameButtonContainer>
+      )}
+
       <ToolsContainer>
         <ToolsWrapper>
-          <ScoreContainer>BankRoll</ScoreContainer>
-          <button disabled={playerScore >= 21} onClick={() => addCard()}>
-            Add Card
-          </button>
-          <ChipsContainer>Chips</ChipsContainer>
+          {isStarting && (
+            <>
+              <ScoreContainer>BankRoll</ScoreContainer>
+              <ButtonsContainer>
+                <Button
+                  modifiers={["hit"]}
+                  disabled={playerScore >= 21 || isPlayerStand}
+                  onClick={() => addCard()}
+                >
+                  Hit
+                </Button>
+                <Button
+                  modifiers={["stand"]}
+                  onClick={stand}
+                  disabled={botScore >= 21}
+                >
+                  Stand
+                </Button>
+              </ButtonsContainer>
+              <ChipsContainer>Chips</ChipsContainer>
+            </>
+          )}
         </ToolsWrapper>
       </ToolsContainer>
     </Container>
@@ -62,21 +104,6 @@ const ToolsContainer = styled.div`
   width: 100%;
   background-color: rgba(128, 0, 0, 0.5);
   border-top: 5px solid crimson;
-  button {
-    height: 50px;
-    background-color: goldenrod;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    padding: 0 15px;
-    outline: 0;
-    cursor: pointer;
-    text-transform: uppercase;
-    &:disabled {
-      background-color: darkkhaki;
-      cursor: not-allowed;
-    }
-  }
 `;
 
 const ToolsWrapper = styled.div`
@@ -93,4 +120,20 @@ const ScoreContainer = styled.div`
 
 const ChipsContainer = styled.div`
   color: lightseagreen;
+`;
+
+const StartGameButtonContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  flex: 1;
+`;
+
+const ButtonsContainer = styled.div`
+  ${Button} {
+    &:not(:last-child) {
+      margin-right: 12px;
+    }
+  }
 `;

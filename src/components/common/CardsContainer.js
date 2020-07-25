@@ -18,7 +18,6 @@ export const ScoreContainer = styled.div`
   font-size: 24px;
   color: white;
   background-color: crimson;
-  box-shadow: 0 3px 3px crimson;
   width: 40px;
   height: 40px;
   border-radius: 6px;

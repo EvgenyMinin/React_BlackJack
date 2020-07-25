@@ -1,17 +1,25 @@
 import React from "react";
-import { CardsContainer } from "./common/CardsContainer";
+import { CardsContainer, ScoreContainer } from "./common/CardsContainer";
 import { CardWrapper } from "./common/CardsWrapper";
 import styled from "styled-components";
 
-const BotCard = ({ botStartCards }) => {
+const BotCard = ({ botCards, botScore, isPlayerStand }) => {
   return (
     <CardsContainer>
-      {botStartCards.map((card) => (
+      {isPlayerStand ? (
+        <ScoreContainer>{botScore}</ScoreContainer>
+      ) : (
+        <ScoreContainer>?</ScoreContainer>
+      )}
+
+      {botCards.map((card) => (
         <CardWrapper key={card} className={card}></CardWrapper>
       ))}
-      <BlankCard>
-        <CardWrapper className="cardBack"></CardWrapper>
-      </BlankCard>
+      {!isPlayerStand && (
+        <BlankCard>
+          <CardWrapper className="cardBack"></CardWrapper>
+        </BlankCard>
+      )}
     </CardsContainer>
   );
 };
