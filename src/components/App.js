@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import BotCard from "./BotCard";
 import PlayerCard from "./PlayerCard";
@@ -17,18 +17,28 @@ const App = () => {
   const [botCards, setBotCards] = useState(botStartCards);
   const [cards, setCards] = useState(startCards);
   const playerScore = getScore(cards);
-  const botScore = getScore(botCards);
+  const [botScore, setBotScore] = useState(0);
 
   const addCard = () => {
     const newCard = randomCards.pop();
-    setCards([...cards, newCard]);
+    setCards((oldCards) => [...oldCards, newCard]);
   };
 
   const stand = () => {
     setIsPlayerStand(true);
-    const newCard = randomCards.pop();
-    setBotCards([...botCards, newCard]);
   };
+
+  useEffect(() => {
+    if (isPlayerStand && botScore <= 15) {
+      const newCard = randomCards.pop();
+      setBotCards((oldArray) => [...oldArray, newCard]);
+    }
+  }, [botScore, isPlayerStand]);
+
+  useEffect(() => {
+    setBotScore(getScore(botCards));
+  }, [botCards]);
+
   return (
     <Container>
       {isStarting ? (
@@ -57,7 +67,7 @@ const App = () => {
                 <Button
                   modifiers={["hit"]}
                   disabled={playerScore >= 21 || isPlayerStand}
-                  onClick={() => addCard()}
+                  onClick={addCard}
                 >
                   Hit
                 </Button>

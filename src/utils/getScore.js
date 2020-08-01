@@ -4,15 +4,12 @@ export const getScore = (cards) => {
     const cardValue = card.slice(1);
     switch (cardValue) {
       case "2":
-      case "J":
         score += 2;
         break;
       case "3":
-      case "Q":
         score += 3;
         break;
       case "4":
-      case "K":
         score += 4;
         break;
       case "5":
@@ -31,6 +28,9 @@ export const getScore = (cards) => {
         score += 9;
         break;
       case "T":
+      case "J":
+      case "Q":
+      case "K":
         score += 10;
         break;
       case "A":

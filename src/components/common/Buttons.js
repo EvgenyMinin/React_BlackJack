@@ -32,6 +32,7 @@ export const Button = styled.button`
   cursor: pointer;
   text-transform: uppercase;
   border: 0;
+  outline: 0;
   border-radius: 10px;
 
   ${applyStyleModifiers(BUTTON_MODIFIERS)};
