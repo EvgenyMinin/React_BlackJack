@@ -31,7 +31,7 @@ const App = () => {
   useEffect(() => {
     if (isPlayerStand && botScore <= 15) {
       const newCard = randomCards.pop();
-      setBotCards((oldArray) => [...oldArray, newCard]);
+      setBotCards((oldCards) => [...oldCards, newCard]);
     }
   }, [botScore, isPlayerStand]);
 
@@ -71,11 +71,7 @@ const App = () => {
                 >
                   Hit
                 </Button>
-                <Button
-                  modifiers={["stand"]}
-                  onClick={stand}
-                  disabled={botScore >= 21}
-                >
+                <Button modifiers={["stand"]} onClick={stand}>
                   Stand
                 </Button>
               </ButtonsContainer>
