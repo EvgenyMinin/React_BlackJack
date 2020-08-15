@@ -1,4 +1,4 @@
-const cardDeck = [
+export const cardDeck = [
   "d2",
   "d3",
   "d4",
@@ -53,8 +53,6 @@ const cardDeck = [
   "sA",
 ];
 
-export const randomCards = cardDeck.slice();
-const compareRandom = () => {
+export const compareRandom = () => {
   return Math.random() - 0.5;
 };
-randomCards.sort(compareRandom);

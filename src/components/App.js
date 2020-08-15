@@ -2,22 +2,39 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import BotCard from "./BotCard";
 import PlayerCard from "./PlayerCard";
-import { randomCards } from "./common/CardDeck";
+import { cardDeck, compareRandom } from "./common/CardDeck";
 import { Button } from "./common/Buttons";
 import table from "../assets/table.jpg";
 import { getScore } from "../utils/getScore";
 import "../scss/cards.scss";
 
-const botStartCards = randomCards.splice(-2, 1);
-const startCards = randomCards.splice(-2, 2);
-
 const App = () => {
+  const [randomCards, setRandomCards] = useState([]);
+  const [botCards, setBotCards] = useState([]);
+  const [cards, setCards] = useState([]);
   const [isStarting, setIsStarting] = useState(false);
   const [isPlayerStand, setIsPlayerStand] = useState(false);
-  const [botCards, setBotCards] = useState(botStartCards);
-  const [cards, setCards] = useState(startCards);
   const playerScore = getScore(cards);
   const [botScore, setBotScore] = useState(0);
+
+  useEffect(() => {
+    if (isPlayerStand && botScore <= 15) {
+      const newCard = randomCards.pop();
+      setBotCards((oldCards) => [...oldCards, newCard]);
+    }
+  }, [randomCards, botScore, isPlayerStand]);
+
+  useEffect(() => {
+    setBotScore(getScore(botCards));
+  }, [botCards]);
+
+  const startGame = () => {
+    setIsStarting(true);
+    const tempArray = cardDeck.slice();
+    setRandomCards(tempArray.sort(compareRandom));
+    setBotCards(randomCards.splice(-2, 1));
+    setCards(randomCards.splice(-2, 2));
+  };
 
   const addCard = () => {
     const newCard = randomCards.pop();
@@ -28,16 +45,13 @@ const App = () => {
     setIsPlayerStand(true);
   };
 
-  useEffect(() => {
-    if (isPlayerStand && botScore <= 15) {
-      const newCard = randomCards.pop();
-      setBotCards((oldCards) => [...oldCards, newCard]);
-    }
-  }, [botScore, isPlayerStand]);
-
-  useEffect(() => {
-    setBotScore(getScore(botCards));
-  }, [botCards]);
+  const deal = () => {
+    setRandomCards([]);
+    setIsStarting(false);
+    setBotCards([]);
+    setCards([]);
+    setIsPlayerStand(false);
+  };
 
   return (
     <Container>
@@ -52,7 +66,7 @@ const App = () => {
         </GameContainer>
       ) : (
         <StartGameButtonContainer>
-          <Button modifiers={["start"]} onClick={() => setIsStarting(true)}>
+          <Button modifiers={["start"]} onClick={startGame}>
             Start Game
           </Button>
         </StartGameButtonContainer>
@@ -73,6 +87,9 @@ const App = () => {
                 </Button>
                 <Button modifiers={["stand"]} onClick={stand}>
                   Stand
+                </Button>
+                <Button modifiers={["stand"]} onClick={deal}>
+                  Deal
                 </Button>
               </ButtonsContainer>
               <ChipsContainer>Chips</ChipsContainer>
