@@ -12,6 +12,7 @@ const App = () => {
   const [randomCards, setRandomCards] = useState([]);
   const [botCards, setBotCards] = useState([]);
   const [cards, setCards] = useState([]);
+  const [bankroll, setBankroll] = useState(100);
   const [isStarting, setIsStarting] = useState(false);
   const [isPlayerStand, setIsPlayerStand] = useState(false);
   const playerScore = getScore(cards);
@@ -46,6 +47,15 @@ const App = () => {
   };
 
   const deal = () => {
+    if (playerScore <= 21 && playerScore > botScore) {
+      setBankroll(bankroll + 10);
+    } else if (playerScore === botScore) {
+      setBankroll(bankroll);
+    } else if (playerScore < botScore && botScore <= 21) {
+      setBankroll(bankroll - 10);
+    } else {
+      setBankroll(bankroll - 10);
+    }
     setRandomCards([]);
     setIsStarting(false);
     setBotCards([]);
@@ -76,7 +86,7 @@ const App = () => {
         <ToolsWrapper>
           {isStarting && (
             <>
-              <ScoreContainer>BankRoll</ScoreContainer>
+              <ScoreContainer>${bankroll}</ScoreContainer>
               <ButtonsContainer>
                 <Button
                   modifiers={["hit"]}
