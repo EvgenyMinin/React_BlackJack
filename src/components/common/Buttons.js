@@ -17,6 +17,9 @@ const BUTTON_MODIFIERS = {
   stand: () => css`
     background-color: lightseagreen;
   `,
+  deal: () => css`
+    background-color: #407855;
+  `,
 };
 
 export const Button = styled.button`

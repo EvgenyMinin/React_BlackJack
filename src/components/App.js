@@ -98,7 +98,7 @@ const App = () => {
                 <Button modifiers={["stand"]} onClick={stand}>
                   Stand
                 </Button>
-                <Button modifiers={["stand"]} onClick={deal}>
+                <Button modifiers={["deal"]} onClick={deal}>
                   Deal
                 </Button>
               </ButtonsContainer>
