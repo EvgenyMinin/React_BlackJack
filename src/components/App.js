@@ -3,6 +3,8 @@ import styled from "styled-components";
 
 import BotCard from "./BotCard";
 import PlayerCard from "./PlayerCard";
+import BetSlider from "./BetSlider";
+import PlayerInfo from "./PlayerInfo";
 
 import { cardDeck, compareRandom } from "./common/CardDeck";
 import { Button } from "./common/Buttons";
@@ -89,34 +91,12 @@ const App = () => {
             isPlayerStand={isPlayerStand}
           />
           <PlayerCard cards={cards} playerScore={playerScore} />
-          <PlayerInfoContainer>
-            <PlayerInfoWrapper>
-              <PlayerInfoName>Player</PlayerInfoName>
-              <PlayerInfoBet>Bet: ${bet}</PlayerInfoBet>
-            </PlayerInfoWrapper>
-            <PlayerInfoTotal>Total: ${bankroll}</PlayerInfoTotal>
-          </PlayerInfoContainer>
+          <PlayerInfo bet={bet} bankroll={bankroll} />
         </GameContainer>
       ) : (
         <StartGameButtonContainer>
           <StartGameButtonWrapper>
-            <BetSliderContainer>
-              <BetContainer>Your bet: {bet}</BetContainer>
-              <SliderWrapper>
-                <input
-                  type="range"
-                  min="1"
-                  max={bankroll}
-                  step="1"
-                  value={bet}
-                  onChange={(e) => setBet(e.target.value)}
-                />
-              </SliderWrapper>
-              <MinMaxBoxWrapper>
-                <span>1</span>
-                <span>{bankroll}</span>
-              </MinMaxBoxWrapper>
-            </BetSliderContainer>
+            <BetSlider bet={bet} bankroll={bankroll} onBet={setBet} />
             <Button modifiers={["start"]} onClick={startGame}>
               Start Game
             </Button>
@@ -189,22 +169,6 @@ const ToolsWrapper = styled.div`
   padding: 0 15px;
 `;
 
-const BetSliderContainer = styled.div`
-  color: brown;
-  margin-bottom: 32px;
-  min-width: 200px;
-  input {
-    width: 100%;
-  }
-`;
-
-const SliderWrapper = styled.div``;
-
-const MinMaxBoxWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-`;
-
 const StartGameButtonContainer = styled.div`
   display: flex;
   flex-direction: column;
@@ -222,33 +186,6 @@ const ButtonsContainer = styled.div`
       margin-right: 12px;
     }
   }
-`;
-
-const PlayerInfoContainer = styled.div`
-  background-color: rgba(0, 0, 0, 0.5);
-  text-align: center;
-  border-radius: 6px;
-`;
-
-const PlayerInfoWrapper = styled.div`
-  padding: 12px;
-  border-bottom: 3px solid crimson;
-`;
-const PlayerInfoName = styled.div`
-  color: white;
-`;
-const PlayerInfoBet = styled.div`
-  color: white;
-`;
-const PlayerInfoTotal = styled.div`
-  padding: 12px;
-  color: white;
-`;
-
-const BetContainer = styled.div`
-  color: brown;
-  font-size: 24px;
-  font-weight: bold;
 `;
 
 const StartGameButtonWrapper = styled.div`
