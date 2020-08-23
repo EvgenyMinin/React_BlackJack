@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+
 import BotCard from "./BotCard";
 import PlayerCard from "./PlayerCard";
+
 import { cardDeck, compareRandom } from "./common/CardDeck";
 import { Button } from "./common/Buttons";
+
 import table from "../assets/table.jpg";
 import { getScore } from "../utils/getScore";
 import "../scss/cards.scss";
@@ -17,6 +20,7 @@ const App = () => {
   const [isPlayerStand, setIsPlayerStand] = useState(false);
   const playerScore = getScore(cards);
   const [botScore, setBotScore] = useState(0);
+  const [bet, setBet] = useState(1);
 
   useEffect(() => {
     if (isPlayerStand && botScore <= 15) {
@@ -29,12 +33,15 @@ const App = () => {
     setBotScore(getScore(botCards));
   }, [botCards]);
 
-  const startGame = () => {
-    setIsStarting(true);
+  useEffect(() => {
     const tempArray = cardDeck.slice();
     setRandomCards(tempArray.sort(compareRandom));
     setBotCards(randomCards.splice(-2, 1));
     setCards(randomCards.splice(-2, 2));
+  }, [isStarting]);
+
+  const startGame = () => {
+    setIsStarting(true);
   };
 
   const addCard = () => {
@@ -48,19 +55,28 @@ const App = () => {
 
   const deal = () => {
     if (playerScore <= 21 && playerScore > botScore) {
-      setBankroll(bankroll + 10);
-    } else if (playerScore === botScore) {
+      setBankroll(bankroll + parseInt(bet));
+    } else if (playerScore <= 21 && botScore > 21) {
+      setBankroll(bankroll + parseInt(bet));
+    } else if (
+      playerScore <= 21 &&
+      botScore <= 21 &&
+      playerScore === botScore
+    ) {
       setBankroll(bankroll);
     } else if (playerScore < botScore && botScore <= 21) {
-      setBankroll(bankroll - 10);
+      setBankroll(bankroll - parseInt(bet));
+    } else if ((playerScore > 21) & (botScore > 21)) {
+      setBankroll(bankroll);
     } else {
-      setBankroll(bankroll - 10);
+      setBankroll(bankroll - parseInt(bet));
     }
     setRandomCards([]);
     setIsStarting(false);
     setBotCards([]);
     setCards([]);
     setIsPlayerStand(false);
+    setBet(1);
   };
 
   return (
@@ -73,20 +89,45 @@ const App = () => {
             isPlayerStand={isPlayerStand}
           />
           <PlayerCard cards={cards} playerScore={playerScore} />
+          <PlayerInfoContainer>
+            <PlayerInfoWrapper>
+              <PlayerInfoName>Player</PlayerInfoName>
+              <PlayerInfoBet>Bet: ${bet}</PlayerInfoBet>
+            </PlayerInfoWrapper>
+            <PlayerInfoTotal>Total: ${bankroll}</PlayerInfoTotal>
+          </PlayerInfoContainer>
         </GameContainer>
       ) : (
         <StartGameButtonContainer>
-          <Button modifiers={["start"]} onClick={startGame}>
-            Start Game
-          </Button>
+          <StartGameButtonWrapper>
+            <BetSliderContainer>
+              <BetContainer>Your bet: {bet}</BetContainer>
+              <SliderWrapper>
+                <input
+                  type="range"
+                  min="1"
+                  max={bankroll}
+                  step="1"
+                  value={bet}
+                  onChange={(e) => setBet(e.target.value)}
+                />
+              </SliderWrapper>
+              <MinMaxBoxWrapper>
+                <span>1</span>
+                <span>{bankroll}</span>
+              </MinMaxBoxWrapper>
+            </BetSliderContainer>
+            <Button modifiers={["start"]} onClick={startGame}>
+              Start Game
+            </Button>
+          </StartGameButtonWrapper>
         </StartGameButtonContainer>
       )}
 
-      <ToolsContainer>
-        <ToolsWrapper>
-          {isStarting && (
+      {isStarting && (
+        <ToolsContainer>
+          <ToolsWrapper>
             <>
-              <ScoreContainer>${bankroll}</ScoreContainer>
               <ButtonsContainer>
                 <Button
                   modifiers={["hit"]}
@@ -98,15 +139,16 @@ const App = () => {
                 <Button modifiers={["stand"]} onClick={stand}>
                   Stand
                 </Button>
-                <Button modifiers={["deal"]} onClick={deal}>
-                  Deal
-                </Button>
+                {isPlayerStand && (
+                  <Button modifiers={["deal"]} onClick={deal}>
+                    Deal
+                  </Button>
+                )}
               </ButtonsContainer>
-              <ChipsContainer>Chips</ChipsContainer>
             </>
-          )}
-        </ToolsWrapper>
-      </ToolsContainer>
+          </ToolsWrapper>
+        </ToolsContainer>
+      )}
     </Container>
   );
 };
@@ -147,12 +189,20 @@ const ToolsWrapper = styled.div`
   padding: 0 15px;
 `;
 
-const ScoreContainer = styled.div`
-  color: lightseagreen;
+const BetSliderContainer = styled.div`
+  color: brown;
+  margin-bottom: 32px;
+  min-width: 200px;
+  input {
+    width: 100%;
+  }
 `;
 
-const ChipsContainer = styled.div`
-  color: lightseagreen;
+const SliderWrapper = styled.div``;
+
+const MinMaxBoxWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
 `;
 
 const StartGameButtonContainer = styled.div`
@@ -164,9 +214,52 @@ const StartGameButtonContainer = styled.div`
 `;
 
 const ButtonsContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  width: 100%;
   ${Button} {
     &:not(:last-child) {
       margin-right: 12px;
     }
   }
+`;
+
+const PlayerInfoContainer = styled.div`
+  background-color: rgba(0, 0, 0, 0.5);
+  text-align: center;
+  border-radius: 6px;
+`;
+
+const PlayerInfoWrapper = styled.div`
+  padding: 12px;
+  border-bottom: 3px solid crimson;
+`;
+const PlayerInfoName = styled.div`
+  color: white;
+`;
+const PlayerInfoBet = styled.div`
+  color: white;
+`;
+const PlayerInfoTotal = styled.div`
+  padding: 12px;
+  color: white;
+`;
+
+const BetContainer = styled.div`
+  color: brown;
+  font-size: 24px;
+  font-weight: bold;
+`;
+
+const StartGameButtonWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #f6f5f3;
+  text-align: center;
+  border-radius: 50%;
+  height: 300px;
+  width: 300px;
+  border: 10px solid brown;
 `;
