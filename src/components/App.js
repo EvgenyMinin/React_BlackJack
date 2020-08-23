@@ -14,12 +14,11 @@ import { getScore } from "../utils/getScore";
 import "../scss/cards.scss";
 
 const App = () => {
+  const blackJackScore = JSON.parse(localStorage.getItem("blackjack"));
   const [randomCards, setRandomCards] = useState([]);
   const [botCards, setBotCards] = useState([]);
   const [cards, setCards] = useState([]);
-  const [bankroll, setBankroll] = useState(
-    JSON.parse(localStorage.getItem("blackjack")) || 100
-  );
+  const [bankroll, setBankroll] = useState(blackJackScore || 100);
   const [isStarting, setIsStarting] = useState(false);
   const [isPlayerStand, setIsPlayerStand] = useState(false);
   const playerScore = getScore(cards);
@@ -59,6 +58,11 @@ const App = () => {
 
   const stand = () => {
     setIsPlayerStand(true);
+  };
+
+  const rebuy = () => {
+    localStorage.setItem("blackjack", 100);
+    setBankroll(100);
   };
 
   const deal = () => {
@@ -102,10 +106,23 @@ const App = () => {
       ) : (
         <StartGameButtonContainer>
           <StartGameButtonWrapper>
-            <BetSlider bet={bet} bankroll={bankroll} onBet={setBet} />
-            <Button modifiers={["start"]} onClick={startGame}>
-              Start Game
-            </Button>
+            {blackJackScore === 0 ? (
+              <>
+                <RebuyContainer>
+                  You have <span>$0</span> <br /> Please rebuy
+                </RebuyContainer>
+                <Button modifiers={["start"]} onClick={rebuy}>
+                  Rebuy
+                </Button>
+              </>
+            ) : (
+              <>
+                <BetSlider bet={bet} bankroll={bankroll} onBet={setBet} />
+                <Button modifiers={["start"]} onClick={startGame}>
+                  Start Game
+                </Button>
+              </>
+            )}
           </StartGameButtonWrapper>
         </StartGameButtonContainer>
       )}
@@ -205,4 +222,14 @@ const StartGameButtonWrapper = styled.div`
   height: 300px;
   width: 300px;
   border: 10px solid brown;
+`;
+
+const RebuyContainer = styled.div`
+  font-size: 24px;
+  line-height: 32px;
+  margin-bottom: 16px;
+  span {
+    color: brown;
+    font-weight: bold;
+  }
 `;

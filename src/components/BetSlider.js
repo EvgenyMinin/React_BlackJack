@@ -28,7 +28,7 @@ export default BetSlider;
 
 const BetSliderContainer = styled.div`
   color: brown;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
   min-width: 200px;
   input {
     width: 100%;
@@ -39,6 +39,7 @@ const BetContainer = styled.div`
   color: brown;
   font-size: 24px;
   font-weight: bold;
+  margin-bottom: 16px;
 `;
 
 const SliderWrapper = styled.div``;
