@@ -17,7 +17,9 @@ const App = () => {
   const [randomCards, setRandomCards] = useState([]);
   const [botCards, setBotCards] = useState([]);
   const [cards, setCards] = useState([]);
-  const [bankroll, setBankroll] = useState(100);
+  const [bankroll, setBankroll] = useState(
+    JSON.parse(localStorage.getItem("blackjack")) || 100
+  );
   const [isStarting, setIsStarting] = useState(false);
   const [isPlayerStand, setIsPlayerStand] = useState(false);
   const playerScore = getScore(cards);
@@ -34,6 +36,10 @@ const App = () => {
   useEffect(() => {
     setBotScore(getScore(botCards));
   }, [botCards]);
+
+  useEffect(() => {
+    localStorage.setItem("blackjack", bankroll);
+  }, [bankroll]);
 
   useEffect(() => {
     const tempArray = cardDeck.slice();
