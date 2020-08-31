@@ -41,10 +41,13 @@ const App = () => {
   }, [bankroll]);
 
   useEffect(() => {
-    const tempArray = cardDeck.slice();
-    setRandomCards(tempArray.sort(compareRandom));
-    setBotCards(randomCards.splice(-2, 1));
-    setCards(randomCards.splice(-2, 2));
+    if (isStarting) {
+      const tempArray = cardDeck.slice();
+      setRandomCards(tempArray.sort(compareRandom));
+      setBotCards(randomCards.splice(-2, 1));
+      setCards(randomCards.splice(-2, 2));
+    }
+    // eslint-disable-next-line
   }, [isStarting]);
 
   const startGame = () => {
